@@ -12,7 +12,8 @@ const ChatContainer = ({ selectedUser, setselectedUser }) => {
   }, []);
 
   return selectedUser ? (
-    <div className="h-full overflow-hidden relative flex flex-col bg-gradient-to-br from-[#181a23] to-[#13141b] backdrop-blur-lg rounded-2xl border border-gray-700 shadow-lg">
+    <div className="h-full overflow-hidden relative flex flex-col bg-gradient-to-br from-[#181a23]
+     to-[#13141b] backdrop-blur-lg rounded-2xl border border-gray-700 shadow-lg">
       {/* ----- Header */}
       <div className="flex items-center gap-3 py-4 px-6 border-b border-gray-700">
         <img src={assets.profile_martin} alt="" className="w-9 h-9 rounded-full" />
