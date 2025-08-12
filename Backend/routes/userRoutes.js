@@ -1,13 +1,13 @@
  import express from "express"
-import { checkAuth, Login, Sign, updateProfile } from "../controllers/userController.js";
+import { checkAuth, Login, Sign, updateProfile } from "../controller/userController.js"
+import {protectRoute } from "../middleware/auth.js";
 
-import { protecRoute } from "../middleware/auth"
 
 const router = express.Router()
 
 router.post("/signup", Sign)
 router.post("/login" , Login)
-router.put("/update-profile" , protecRoute , updateProfile)
-router.get("/check" , protecRoute , checkAuth)
+router.put("/update-profile" ,protectRoute , updateProfile)
+router.get("/check" , protectRoute , checkAuth)
 
 export default router;

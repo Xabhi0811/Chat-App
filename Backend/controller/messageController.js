@@ -1,5 +1,5 @@
-import Message from "../models/Message"
-import {io , userSocketMap} from "../server"
+import Message from "../models/Message.js"
+import {io , userSocketMap} from "../server.js"
 
 
 export const getUsersForSlidebar = async (req , res)=>{
@@ -95,6 +95,9 @@ export const sendMessage = async (req , res) =>{
           // receiver socket id for new message
 
           const receiverSocketId = userSocketMap[receiverId]
+          if(receiverSocketId){
+            io.to(receiverSocketId).emit("newMessage" , newMessage)
+          }
 
           res.json({success: true, newMessage})
     } catch(error)
