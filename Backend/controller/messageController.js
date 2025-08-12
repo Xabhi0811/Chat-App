@@ -1,4 +1,5 @@
 import Message from "../models/Message"
+import {io , userSocketMap} from "../server"
 
 
 export const getUsersForSlidebar = async (req , res)=>{
@@ -21,11 +22,12 @@ export const getUsersForSlidebar = async (req , res)=>{
 
     } catch(error){
         console.log(error.message)
-        res.json({success: false , users: fileredUsers , unseenMessages})
+        res.json({success: false , message: error.message})
 
     }
 }
 
+// get all message for selected user
 
 export const getMessages = async (req, res) =>{
     try{
@@ -41,8 +43,8 @@ export const getMessages = async (req, res) =>{
 
         })
 
-        await Message.updateManY({senderId: selectedUserId , receiverId: myId}),
-        {seen: true}
+        await Message.updateManY({senderId: selectedUserId , receiverId: myId},
+        {seen: true})
 
         res.json({success: true , message})
 
@@ -50,4 +52,55 @@ export const getMessages = async (req, res) =>{
          console.log(error.message)
          res.json({success: false , message: error.message})
     }
+}
+
+   // message seen using message id
+ export const markMessageAsSeen = async (req , res) =>{
+    try{
+         const { id } = req.params
+         await Message.findByIdAndUpdate(id , {seen: true})
+         res.josn({success: true})
+
+    } catch(error){
+        console.log(error.message)
+        res.json({success: false , message: error.message})
+
+    }
+ }
+
+
+
+ 
+//send message to selected user
+
+export const sendMessage = async (req , res) =>{
+    try {
+          const { text , image} = req.body
+          const receiverId = req.params._id
+          const senderId = req.user._id
+
+          let imageUrl
+          if(image){
+            const uploadResponse = await cloudinary.uploader.upload(image)
+              imageUrl = uploadResponse.secure_url
+          }
+
+          const newMessage = await Message.create({
+            senderId,
+            receiverId,
+            text,
+            image: imageUrl
+          })
+
+          // receiver socket id for new message
+
+          const receiverSocketId = userSocketMap[receiverId]
+
+          res.json({success: true, newMessage})
+    } catch(error)
+    {
+        console.log(error.message)
+        res.json({success: false , message: error.message})
+    }
+
 }
