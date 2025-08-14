@@ -100,7 +100,7 @@ export const updateProfile = async (req, res) => {
 
         res.json({ success: true, user: updatedUser });
     } catch (error) {
-        console.log(error.message);
+       console.error("Error updating profile:", error);
         res.status(500).json({ success: false, msg: "Profile update failed" });
     }
 };
