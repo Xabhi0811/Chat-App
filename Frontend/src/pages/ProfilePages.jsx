@@ -1,18 +1,36 @@
-import React, { useState } from 'react'
+ import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import assets from '../assets/assets'
+import { AuthContext } from '../../context/AuthContext'
 
 const ProfilePages = () => {
+  
+ const {authUser, updateProfile} = useContext(AuthContext)
+
+
   const [selectedImg, setSelectedImg] = useState(null)
   const navigate = useNavigate()
-  const [name, setName] = useState('Abhishek Singh Chauhan')
-  const [bio, setBio] = useState('Hii Everyone I am using Quick Chat')
+  const [name, setName] = useState(authUser.fullName)
+  const [bio, setBio] = useState(authUser.bio)
 
   const handlerSubmit = async (e) => {
-    e.preventDefault() // Fixed typo here
-    // Here you would typically save the profile data
-    // For example: await updateProfile({ name, bio, image: selectedImg });
-    navigate('/') // Navigate to home after submission
+    e.preventDefault()
+    if(!selectedImg){
+      await updateProfile({fullName: name , bio})
+       navigate('/')
+       return;
+    }
+
+    const reader = new FileReader()
+    reader.readAsDataURL(selectedImg)
+    reader.onload = async ()=>{
+      const base64Image = reader.result
+     
+      await updateProfile({profilePic: base64Image , fullName: name , bio})
+      navigate('/')
+    }
+   
+   
   }
 
   return (
@@ -64,7 +82,7 @@ const ProfilePages = () => {
           </button>
         </form>
         <img 
-          className='max-w-42 aspect-square rounded-full max-10 max-sm:mt-10' 
+          className={`max-w-42 aspect-square rounded-full max-10 max-sm:mt-10 ${selectedImg && 'rounded-full'}`} 
           src={assets.logo_icon} 
           alt='' 
         />

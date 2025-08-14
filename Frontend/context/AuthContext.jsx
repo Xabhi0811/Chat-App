@@ -25,16 +25,24 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is authenticated
   const checkAuth = async () => {
-    try {
-      const { data } = await axios.get("/api/auth/check");
-      if (data.success) {
-        setAuthUser(data.user);
-        connectSocket(data.user);
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return; // No token, no need to check
+
+    const { data } = await axios.get("/api/auth/check", {
+      headers: {
+        Authorization: `Bearer ${token}` // ✅ Send token to backend
       }
-    } catch (error) {
-      toast.error(error.message);
+    });
+
+    if (data.success) {
+      setAuthUser(data.user);
+      connectSocket(data.user);
     }
-  };
+  } catch (error) {
+    toast.error(error.response?.data?.message || error.message);
+  }
+};
 
   // Handle login/signup
   const login = async (state, credentials) => {
@@ -43,9 +51,12 @@ export const AuthProvider = ({ children }) => {
       if (data.success) {
         setAuthUser(data.userData);
         connectSocket(data.userData);
-        axios.defaults.headers.common["token"] = data.token;
+
+        // ✅ Set Authorization header globally
+        axios.defaults.headers.common["Authorization"] = `Bearer ${data.token}`;
         setToken(data.token);
         localStorage.setItem("token", data.token);
+
         toast.success(data.message);
         return data;
       } else {
@@ -64,7 +75,7 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setAuthUser(null);
     setOnlineUsers([]);
-    axios.defaults.headers.common["token"] = null;
+    axios.defaults.headers.common["Authorization"] = null;
     toast.success("Logged out successfully");
     socket?.disconnect();
   };
@@ -72,12 +83,30 @@ export const AuthProvider = ({ children }) => {
   // Update user profile
   const updateProfile = async (body) => {
     try {
-      const { data } = await axios.put("/api/auth/update-profile", body);
-      setAuthUser(data.user);
-      toast.success("Profile updated successfully");
-      return data;
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+
+      const { data } = await axios.put("/api/auth/update-profile", body, {
+        headers: {
+          Authorization: `Bearer ${token}` // ✅ Always use Bearer token
+        }
+      });
+
+      if (data.success) {
+        setAuthUser(data.user);
+        toast.success("Profile updated successfully");
+        return data;
+      }
+      throw new Error(data.message || "Profile update failed");
     } catch (error) {
-      toast.error(error.message);
+      if (error.response?.status === 401) {
+        logout();
+        toast.error("Session expired. Please login again.");
+      } else {
+        toast.error(error.response?.data?.message || error.message);
+      }
       throw error;
     }
   };
@@ -86,9 +115,7 @@ export const AuthProvider = ({ children }) => {
   const connectSocket = (userData) => {
     if (!userData || socket?.connected) return;
     const newSocket = io(backendUrl, {
-      query: {
-        userId: userData._id,
-      }
+      query: { userId: userData._id },
     });
     newSocket.connect();
     setSocket(newSocket);
@@ -100,7 +127,8 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      axios.defaults.headers.common["token"] = token;
+      // ✅ Ensure Authorization header is set on reload
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       checkAuth();
     }
   }, [token]);
@@ -112,7 +140,6 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     updateProfile,
-    checkAuth
   };
 
   return (
