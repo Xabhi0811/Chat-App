@@ -47,6 +47,11 @@ app.use('/api/status', (req, res) => res.send("Server is live"));
 app.use("/api/auth",router);
 app.use("/api/message",rashi);
 
+app.get("/", (req, res) => {
+  res.send("Backend is running ✅");
+});
+
+
 if(process.env.NODE_ENV !== "production"){
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
