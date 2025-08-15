@@ -1,10 +1,13 @@
-import Message from "../models/Message.js"
-import {io , userSocketMap} from "../server.js"
+import Message from "../models/Message.js";
+import User from "../models/models.js";             // ✅ you use User here, so import it
+import { io, userSocketMap } from "../server.js";
+import cloudinary from "cloudinary"; 
 
 
 export const getUsersForSlidebar = async (req , res)=>{
     try{
         const userId = req.user._id
+        
         const  fileredUsers = await User.find({_id: {$ne: userId}}).select("-password")
 
           //count unseenMessages no
@@ -13,7 +16,7 @@ export const getUsersForSlidebar = async (req , res)=>{
              const message = await Message.find({senderId: user._id , receiverId: userId , seen: false})
              if(message.length > 0)
              {
-                unseenMessages[userId._id] = message.length
+                unseenMessages[user._id] = message.length
              }
         })
 
@@ -43,10 +46,10 @@ export const getMessages = async (req, res) =>{
 
         })
 
-        await Message.updateManY({senderId: selectedUserId , receiverId: myId},
+        await Message.updateMany({senderId: selectedUserId , receiverId: myId},
         {seen: true})
 
-        res.json({success: true , message})
+        res.json({success: true , message: messages  })
 
     } catch(error){
          console.log(error.message)
@@ -59,7 +62,7 @@ export const getMessages = async (req, res) =>{
     try{
          const { id } = req.params
          await Message.findByIdAndUpdate(id , {seen: true})
-         res.josn({success: true})
+         res.json({success: true})
 
     } catch(error){
         console.log(error.message)
@@ -76,7 +79,7 @@ export const getMessages = async (req, res) =>{
 export const sendMessage = async (req , res) =>{
     try {
           const { text , image} = req.body
-          const receiverId = req.params._id
+          const receiverId = req.params.id
           const senderId = req.user._id
 
           let imageUrl
