@@ -49,7 +49,7 @@ export const getMessages = async (req, res) =>{
         await Message.updateMany({senderId: selectedUserId , receiverId: myId},
         {seen: true})
 
-        res.json({success: true , message: messages  })
+        res.json({success: true , messages  })
 
     } catch(error){
          console.log(error.message)
