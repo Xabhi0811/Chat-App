@@ -4,51 +4,65 @@ import { ChatContext } from '../../context/ChatContext';
 import { AuthContext } from '../../context/AuthContext';
 
 const RightSidebar = () => {
+  const { selectedUser, messages } = useContext(ChatContext)
+  const { logout, onlineUsers } = useContext(AuthContext)
+  const [msgImages, setMsgImages] = useState([])
 
-   const { selectedUser , messages} = useContext(ChatContext)
-   const {logout , onlineUsers} = useContext(AuthContext)
-   const [msgImages , setMsgImages] = useState([])
-
-   // get all the image from chat set to states
-    useEffect(()=>{
-
-   setMsgImages(
-    messages.filter(msg => msg.image).map(msg=>msg.image)
-    
-   )
-
-    },[messages])
-
-
-
-
+  useEffect(() => {
+    setMsgImages(
+      messages.filter(msg => msg.image).map(msg => msg.image)
+    )
+  }, [messages])
 
   return selectedUser && (
-    <div className={`bg-[#8185B2]/10 text-white w-full relative overflow-y-scroll
+    <div className={`bg-gray-800 text-gray-200 w-full relative overflow-y-auto border-l border-gray-700
       ${selectedUser ? "max-md:hidden" : ""}`}>
-      <div className="pt-16 flex flex-col items-center gap-2 text-xs font-light mx-auto">
-        <img src={selectedUser?.profilePic || assets.avatar_icon} alt="" className="w-20 aspect-[1/1] rounded-full" />
-        <h1 className="px-10 text-xl font-medium mx-auto flex items-center gap-2">
-         {onlineUsers.includes(selectedUser._id) && <p className="w-2 h-2 rounded-full bg-green-500"></p>}
+      
+      {/* Profile Section */}
+      <div className="pt-8 pb-4 flex flex-col items-center gap-3 text-center px-4">
+        <img 
+          src={selectedUser?.profilePic || assets.avatar_icon} 
+          alt="" 
+          className="w-24 h-24 rounded-full object-cover border-2 border-gray-600 shadow-md" 
+        />
+        <h1 className="text-xl font-medium flex items-center gap-2 mt-2">
+          {onlineUsers.includes(selectedUser._id) && (
+            <span className="w-2 h-2 rounded-full bg-green-500"></span>
+          )}
           {selectedUser.fullName}
         </h1>
-        <p className="px-10 mx-auto">{selectedUser.bio}</p>
+        <p className="text-gray-400 text-sm max-w-xs">{selectedUser.bio}</p>
       </div>
-      <hr className="border-[#ffffff50] my-4" />
-      <div className="px-5 text-xs">
-        <p>Media</p>
-        <div className="mt-2 max-h-[200px] overflow-y-scroll grid grid-cols-2 gap-4 opacity-80">
-          {msgImages.map((url, index) => (
-            <div className="cursor-pointer rounded" key={index} onClick={() => window.open(url)}>
-              <img className="h-full rounded-md" src={url} alt="" />
-            </div>
-          ))}
+      
+      <hr className="border-gray-700 my-4" />
+      
+      {/* Media Section */}
+      <div className="px-4 pb-16">
+        <p className="text-sm font-medium text-gray-300 mb-3">Shared Media</p>
+        <div className="max-h-[250px] overflow-y-auto">
+          <div className="grid grid-cols-2 gap-3">
+            {msgImages.map((url, index) => (
+              <div 
+                className="cursor-pointer rounded-md overflow-hidden border border-gray-700 hover:border-purple-500 transition-all"
+                key={index} 
+                onClick={() => window.open(url)}
+              >
+                <img 
+                  className="w-full h-24 object-cover hover:scale-105 transition-transform" 
+                  src={url} 
+                  alt="" 
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-      <button onClick={()=> logout()}
-        className="absolute bottom-5 left-1/2 transform -translate-x-1/2
-          bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light 
-          py-2 px-20 rounded-full cursor-pointer">
+      
+      {/* Logout Button */}
+      <button 
+        onClick={() => logout()}
+        className="sticky bottom-4 left-0 right-0 mx-auto w-[calc(100%-2rem)] bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium py-2 px-4 rounded-full cursor-pointer hover:from-purple-700 hover:to-indigo-700 transition-colors shadow-lg"
+      >
         Logout
       </button>
     </div>

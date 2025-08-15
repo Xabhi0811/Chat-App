@@ -33,20 +33,20 @@ const LoginPages = () => {
   };
 
   return (
-    <div className='min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl'>
+    <div className='min-h-screen bg-gray-900 flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col'>
       {/* Logo section */}
       <img className='w-[min(30vw,250px)]' src={assets.logo_big} alt='' />
 
       {/* Form section */}
-      <form onSubmit={onSubmitHandler} className='border-2 bg-white/8 text-white border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg'>
-        <h2 className='font-medium text-2xl flex justify-between items-center'>
+      <form onSubmit={onSubmitHandler} className='bg-gray-800 text-white p-8 flex flex-col gap-6 rounded-lg shadow-xl border border-gray-700 w-full max-w-md'>
+        <h2 className='font-medium text-2xl flex justify-between items-center text-white'>
           {currState}
           {isDataSubmitted && currState === 'Sign-up' && (
             <img 
               onClick={() => setIsDataSubmitted(false)} 
               src={assets.arrow_icon} 
               alt='back' 
-              className='w-5 cursor-pointer' 
+              className='w-5 cursor-pointer filter invert' 
             />
           )}
         </h2>
@@ -60,7 +60,7 @@ const LoginPages = () => {
                   onChange={(e) => setFullName(e.target.value)}
                   type='text'
                   placeholder='Full Name'
-                  className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'
+                  className='p-3 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400'
                   required
                 />
                 <input 
@@ -68,7 +68,7 @@ const LoginPages = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   type='email'
                   placeholder='Email'
-                  className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'
+                  className='p-3 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400'
                   required
                 />
                 <input 
@@ -76,7 +76,7 @@ const LoginPages = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   type='password'
                   placeholder='Password'
-                  className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'
+                  className='p-3 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400'
                   required
                 />
               </>
@@ -86,7 +86,7 @@ const LoginPages = () => {
                 onChange={(e) => setBio(e.target.value)}
                 placeholder='Provide a short bio.....'
                 rows={4}
-                className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'
+                className='p-3 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400'
                 required
               />
             )}
@@ -98,7 +98,7 @@ const LoginPages = () => {
               onChange={(e) => setEmail(e.target.value)}
               type='email'
               placeholder='Email'
-              className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'
+              className='p-3 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400'
               required
             />
             <input 
@@ -106,7 +106,7 @@ const LoginPages = () => {
               onChange={(e) => setPassword(e.target.value)}
               type='password'
               placeholder='Password'
-              className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'
+              className='p-3 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400'
               required
             />
           </>
@@ -114,7 +114,7 @@ const LoginPages = () => {
 
         <button 
           type='submit'
-          className='py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md cursor-pointer'
+          className='py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-md cursor-pointer font-medium hover:from-purple-700 hover:to-indigo-700 transition-all'
         >
           {currState === 'Sign-up' 
             ? (isDataSubmitted ? 'Complete Sign Up' : 'Continue') 
@@ -122,35 +122,35 @@ const LoginPages = () => {
         </button>
 
         {currState === 'Sign-up' && !isDataSubmitted && (
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <input type='checkbox' required />
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <input type='checkbox' className='accent-purple-500' required />
             <p>Agree to the terms of use & privacy policy.</p>
           </div>
         )}
 
         <div className="flex flex-col gap-2">
           {currState === 'Sign-up' ? (
-            <p className='text-sm text-gray-600'>
+            <p className='text-sm text-gray-400'>
               Already have an account?{' '}
               <span 
                 onClick={() => {
                   setCurrState('Login');
                   setIsDataSubmitted(false);
                 }}
-                className='font-medium text-violet-500 cursor-pointer'
+                className='font-medium text-purple-400 cursor-pointer hover:text-purple-300'
               >
                 Login here
               </span>
             </p>
           ) : (
-            <p className='text-sm text-gray-600'>
+            <p className='text-sm text-gray-400'>
               Create an account{' '}
               <span 
                 onClick={() => {
                   setCurrState('Sign-up');
                   setIsDataSubmitted(false);
                 }}
-                className='font-medium text-violet-500 cursor-pointer'
+                className='font-medium text-purple-400 cursor-pointer hover:text-purple-300'
               >
                 Click here
               </span>
