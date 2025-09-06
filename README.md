@@ -19,6 +19,7 @@ A real‑time chat application built with the MERN stack and Socket.IO, enabling
 
 > *Note:* Adjust this list to match your actual implementation.
 
+
 ---
 
 ## 🧱 Tech Stack
