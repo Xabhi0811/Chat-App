@@ -5,6 +5,7 @@ import { ChatContext } from '../../context/ChatContext';
 import { AuthContext } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
+
 const ChatContainer = () => {
   const {messages, selectedUser, setSelectedUser, sendMessage, getMessages} = useContext(ChatContext)
   const { authUser, onlineUsers } = useContext(AuthContext)
