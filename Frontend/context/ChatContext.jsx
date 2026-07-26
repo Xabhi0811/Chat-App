@@ -25,6 +25,7 @@ export const ChatProvider = ({ children }) => {
       toast.error(error.message);
     }
   };
+  
 
   // Fetch messages for selected user
   const getMessages = async (userId) => {
