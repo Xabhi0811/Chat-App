@@ -3,7 +3,6 @@ import { generateToken } from "../lib/utils.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
 
-
 // Sign-up function
 export const Sign = async (req, res) => {
     const { fullName, password, email, bio } = req.body;
